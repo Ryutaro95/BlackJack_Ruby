@@ -26,5 +26,3 @@ class Deck < Card
     @cards = deck.shuffle
   end
 end
-
-# p Deck.build_deck

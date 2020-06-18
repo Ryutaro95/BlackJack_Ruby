@@ -13,90 +13,60 @@ class BlackJack
     @dealer_hand = @dealer.create_hand(@deck)
   end
 
-  # def show_card(hand, name)
-  #   cards = open_cards(hand)
-  #   arr = []
-  #   cards.map do |card|
-  #     arr << card.join('の')
-  #   end
-  #   puts "#{name}の手札：#{arr.join(' | ')}"
-  # end
+  def player_draw
+    loop do
+      @player_hand << @player.draw(deck)# if @player.draw?
+      point = @player.point_for_display(@player_hand)
+      puts "あなたの手札: | #{@player.show_hand(player_hand)} |"
+      puts "ポイント: #{point}"
+      burst(point)
+      break unless @player.draw?
+    end
+  end
 
-  # Mind: ディーラーしか使わないメソッドだからDealerクラスに移動しようかな？
-  # ディーラーの手札を1枚伏せた状態で表示
-  # def dealer_show_card
-  #   cards = open_cards(@dealer_hand)
-  #   arr = []
-  #   cards.map do |card|
-  #     arr << card.join('の')
-  #   end
-  #   puts "ディーラーの手札：| #{arr[0]} | ******* |"
-  # end
+  def blackjack?(point)
+    point == 21 ? true : false
+  end
 
-  # def show_point(hand, name)
-  #   puts "#{name}の手札：#{open_point(hand)}"
-  # end
+  def burst?(point)
+    point > 21 ? true : false
+  end
 
-  # def blackjack?
-  #   open_point(@player_hand) == 21 ? true : false
-  # end
+  def burst(point)
+    if burst?(point)
+      puts "バーストしました"
+      exit
+    end
+  end
 
-  # def burst?(hand)
-  #   open_point(hand) >= 22 ? true : false
-  # end
+  # ディーラーは手札の得点が17以上になるまで引き続ける
+  def dealer_draw
+    loop do
+      break unless @dealer.dealer_draw?(@dealer.point_for_display(@dealer_hand))
+      @dealer_hand << @dealer.draw(@deck)
+    end
+    if burst?(@dealer.point_for_display(@dealer_hand))
+      puts "ディーラーはバーストしました"
+      puts "ディーラーの手札: #{@dealer.show_hand(dealer_hand)}"
+      puts "ポイント: #{@dealer.point_for_display(dealer_hand)}"
+      puts "プレイヤーの勝利です"
+      exit
+    end
+  end
+
+  def judge(player, dealer)
+    if player < dealer
+      puts "ディーラーの勝利です\n残念！"
+      exit
+    elsif player > dealer
+      puts "プレイヤーの勝利です。\nおめでとうございます。"
+      exit
+    else
+      puts "同点です"
+      exit
+    end
+  end
   
-
-  # def draw_card
-  #   loop do
-  #     if draw?
-  #       @player_hand << draw(@deck)
-  #       show_card(@player_hand, "プレイヤー")
-  #       show_point(@player_hand, "プレイヤー")
-  #       if burst?(@player_hand)
-  #         sleep 1
-  #         puts "バーストです"
-  #         exit
-  #       end
-  #     else
-  #       break
-  #     end
-  #   end
-  # end
-
-  # def dealer_draw?
-  #   if open_point(@dealer_hand) < 17
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-
-  # def dealer_draw_card
-  #   loop do
-  #     if dealer_draw?
-  #       @dealer_hand << draw(@deck)
-  #       if burst?(@dealer_hand)
-  #         sleep 1
-  #         puts "ディーラーがバーストしました"
-  #         puts "プレイヤーの勝利"
-  #         exit
-  #       end
-  #     else
-  #       break
-  #     end
-  #   end
-  # end
-
-  # def judge(player, dealer)
-  #   if player == dealer
-  #     puts "同点です"
-  #   elsif player > dealer
-  #     puts "プレイヤーの勝利!!"
-  #   else
-  #     puts "プレイヤーの負けです...."
-  #   end
-  #   exit
-  # end
 
   def start
     puts "BlackJack start!!"
@@ -104,24 +74,17 @@ class BlackJack
     puts "あなたの手札: | #{@player.show_hand(player_hand)} |"
     puts "ポイント: #{@player.point_for_display(player_hand)}"
     puts @dealer.secret_show_card(@dealer_hand)
-    # dealer_show_card
-    # if blackjack?
-    #   puts "!!!!おめでとうございます!!!!\nBlackJackです"
-    #   exit
-    # end
-    # draw_card
-    # puts "------------------- ディーラーのターン ----------------------"
-    # dealer_draw_card
-    # puts show_card(@dealer_hand, "ディーラー")
-    # puts show_point(@dealer_hand, "ディーラー")
-    # point = open_point(@player_hand)
-    # point2 = open_point(@dealer_hand)
-    # judge(point, point2)
-  end
+    player_draw if @player.draw?
+    puts "------------------- ディーラーのターン ----------------------"
+    dealer_draw
+    puts "ディーラーの手札: #{@dealer.show_hand(dealer_hand)}"
+    puts "ポイント: #{@dealer.point_for_display(dealer_hand)}"
 
-  
+    player_point = @player.point_for_display(player_hand)
+    dealer_point = @dealer.point_for_display(dealer_hand)
+    judge(player_point, dealer_point)
+  end
 end
 
 game = BlackJack.new
 game.start
-# p game.player

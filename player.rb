@@ -29,51 +29,23 @@ class PlayerBase
     show_cards
   end
 
-  
-
-
   # 手札の得点を返す（計算用に変換されてから処理が始まる）
   def point_for_display(hand)
     point = to_calculation_card_number(hand)
     point.inject(0){ |sum, card| sum += card[1] }
   end
 
-  # TODO: このクラスに必要？か考える
-  # def blackjack?(point)
-  #   if point == 21
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-
-  
-  # TODO: このクラスに必要？か考える
-  # def draw(deck)
-  #   deck.pop
-  # end
-
-  # TODO: このクラスに必要？か考える
-  # def burst?(point)
-  #   if point >= 22
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-
-  # TODO: このクラスに必要？か考える
-  # def self.result(user, dealer)
-  #   if user < dealer
-  #     puts "ディーラーの勝利"
-  #   elsif user == dealer
-  #     puts "同点です"
-  #   else
-  #     puts "プレイヤーの勝利"
-  #   end
-  # end
   def draw(deck)
     deck.pop
+  end
+
+  def show_hand(hand)
+    user_hand = to_role(hand)
+    cards = []
+    user_hand.each do |card|
+      cards << "#{card[0]}の#{card[1]}"
+    end
+    cards.join(' | ')
   end
 
   private
@@ -98,32 +70,17 @@ class PlayerBase
 end
 
 class Player < PlayerBase
-
-  # プレイヤーのカードを公開用に変換した文字列を返す
-  def show_hand(hand)
-    user_hand = to_role(hand)
-    cards = []
-    user_hand.each do |card|
-      cards << "#{card[0]}の#{card[1]}"
-    end
-    cards.join(' | ')
-  end
-
   # ユーザーの回答内容によって真偽値が返る
   def draw?
     user_input = users_input_answer
-    if user_input == "Y"
-      true
-    else
-      false
-    end
+    user_input == "Y" ? true : false
   end
 
   private
 
   # ユーザーに回答を求める
   def users_input_answer
-    puts "カードを引きますか？引く場合はYを、引かない場合はNを入力してください"
+    puts "カードを引きますか？[y/n]"
     input = gets.upcase.chomp
     unless input == "Y" || input == "N"
       loop do
@@ -132,12 +89,13 @@ class Player < PlayerBase
         break if input == "Y" || input == "N"
       end
     end
+    input
   end
 end
 
 
 class Dealer < PlayerBase
-  def draw?(point)
+  def dealer_draw?(point)
     point < 17 ? true : false
   end
 
