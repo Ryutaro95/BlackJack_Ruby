@@ -33,8 +33,8 @@ class PlayerBase
 
 
   # 手札の得点を返す（計算用に変換されてから処理が始まる）
-  def point_for_display
-    point = to_calculation_card_number(playing_cards)
+  def point_for_display(hand)
+    point = to_calculation_card_number(hand)
     point.inject(0){ |sum, card| sum += card[1] }
   end
 
@@ -139,11 +139,11 @@ end
 class Dealer < PlayerBase
   def draw?(point)
     point < 17 ? true : false
+  end
 
-    # if point < 17
-    #   true
-    # else
-    #   false
-    # end
+  def secret_show_card(hand)
+    cards = []
+    hand.map {|card| cards << card.join("の")}
+    "ディーラーの手札: | #{cards[0]} | ******** |"
   end
 end

@@ -1,5 +1,5 @@
-require './card.rb'
-require './player.rb'
+require './card'
+require './player'
 
 class BlackJack
   attr_accessor :player_hand, :dealer_hand
@@ -101,8 +101,9 @@ class BlackJack
   def start
     puts "BlackJack start!!"
     puts "------------------- プレイヤーのターン ----------------------"
-    puts "あなたの手札は| #{@player.show_hand(player_hand)} |です"
-    # show_point(@player_hand, "プレイヤー")
+    puts "あなたの手札: | #{@player.show_hand(player_hand)} |"
+    puts "ポイント: #{@player.point_for_display(player_hand)}"
+    puts @dealer.secret_show_card(@dealer_hand)
     # dealer_show_card
     # if blackjack?
     #   puts "!!!!おめでとうございます!!!!\nBlackJackです"
