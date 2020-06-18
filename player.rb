@@ -1,9 +1,9 @@
 # Mind: このクラスにはプレイヤーとディーラーの共通で使うメソッドを入れたい
 class PlayerBase
   attr_accessor :playing_cards
-  def initialize(deck)
+  def initialize
     # インスタンスオブジェクト作成時にカードが配られる
-    @playing_cards = deck.pop(2)
+    @playing_cards = Deck.build_deck.pop(2)
   end
 
   # 手札を表示用に変換（受け取ったデータを書き換えている訳ではない）
@@ -30,25 +30,12 @@ class PlayerBase
     show_cards
   end
 
-  # 手札を計算用に変換（受け取ったデータを書き換えている訳ではない）
-  def convert_to_calculation(cards)
-    calculation_cards = []
-    cards.each do |card|
-      case card[1]
-        when 11, 12, 13
-          num = 10
-          calculation_cards << [card[0], num]
-        else 
-          calculation_cards << card
-      end
-    end
-    calculation_cards
-  end
+  
 
 
-  # 手札の得点を返す（受け取った手札は計算用に変換されてから処理が始まる）
-  def open_point(cards)
-    point = convert_to_calculation(cards)
+  # 手札の得点を返す（計算用に変換されてから処理が始まる）
+  def open_point
+    point = to_calculation_card_number(self.playing_cards)
     point.inject(0){ |sum, card| sum += card[1] }
   end
 
@@ -89,6 +76,26 @@ class PlayerBase
   def draw(deck)
     deck.pop
   end
+
+  private
+
+  # 手札を計算用に変換（非破壊的）
+  def to_calculation_card_number(cards)
+    # 計算ように変換したカードを格納する配列
+    calculation_cards = []
+    cards.each do |card|
+      case card[1]
+        when 11, 12, 13
+          num = 10
+          calculation_cards << [card[0], num]
+        else 
+          calculation_cards << card
+      end
+    end
+    calculation_cards
+  end
+
+
 end
 
 class Player < PlayerBase
@@ -110,6 +117,9 @@ class Player < PlayerBase
       false
     end
   end
+
+  private
+
 end
 
 

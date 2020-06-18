@@ -1,26 +1,21 @@
-require './card2.rb'
-require './user.rb'
+require './card.rb'
+require './player.rb'
 
-class BlackJack < Player
-  attr_accessor :deck, :player, :dealer, :player_hand, :dealer_hand
+class BlackJack
+  attr_accessor :player
 
   def initialize
-    @deck = Deck.new.build_deck
     @player = Player.new
-    @dealer = Player.new
-    # 初期手札を配る
-    @player_hand = @player.initial_draw(@deck)
-    @dealer_hand = @dealer.initial_draw(@deck)
   end
 
-  def show_card(hand, name)
-    cards = open_cards(hand)
-    arr = []
-    cards.map do |card|
-      arr << card.join('の')
-    end
-    puts "#{name}の手札：#{arr.join(' | ')}"
-  end
+  # def show_card(hand, name)
+  #   cards = open_cards(hand)
+  #   arr = []
+  #   cards.map do |card|
+  #     arr << card.join('の')
+  #   end
+  #   puts "#{name}の手札：#{arr.join(' | ')}"
+  # end
 
   # Mind: ディーラーしか使わないメソッドだからDealerクラスに移動しようかな？
   # ディーラーの手札を1枚伏せた状態で表示
@@ -121,6 +116,6 @@ class BlackJack < Player
   
 end
 
-game = BlackJack.new
-game.start
+# game = BlackJack.new
+# game.start
 # p game.player
