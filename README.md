@@ -12,4 +12,4 @@ Ruby 2.7.0
 $ ruby blackjack.rb
 ```
 
-[](./image/blackjack.png)
+![](./image/blackjack.png)
