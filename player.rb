@@ -1,15 +1,14 @@
 # Mind: このクラスにはプレイヤーとディーラーの共通で使うメソッドを入れたい
 class PlayerBase
-  attr_accessor :playing_cards
-  def initialize
-    # インスタンスオブジェクト作成時にカードが配られる
-    @playing_cards = Deck.build_deck.pop(2)
+  # 山札から2枚配る
+  def create_hand(deck)
+    deck.pop(2)
   end
 
-  # 手札を表示用に変換（受け取ったデータを書き換えている訳ではない）
-  def open_cards(cards)
+  # 手札の数字を表示用の役に変換（非破壊的）
+  def to_role(hand)#card_for_display(hand)
     show_cards = []
-    cards.each do |card|
+    hand.each do |card|
       case card[1]
       when 1
         num = "A"
@@ -34,8 +33,8 @@ class PlayerBase
 
 
   # 手札の得点を返す（計算用に変換されてから処理が始まる）
-  def open_point
-    point = to_calculation_card_number(self.playing_cards)
+  def point_for_display
+    point = to_calculation_card_number(playing_cards)
     point.inject(0){ |sum, card| sum += card[1] }
   end
 
@@ -100,7 +99,30 @@ end
 
 class Player < PlayerBase
 
+  # プレイヤーのカードを公開用に変換した文字列を返す
+  def show_hand(hand)
+    user_hand = to_role(hand)
+    cards = []
+    user_hand.each do |card|
+      cards << "#{card[0]}の#{card[1]}"
+    end
+    cards.join(' | ')
+  end
+
+  # ユーザーの回答内容によって真偽値が返る
   def draw?
+    user_input = users_input_answer
+    if user_input == "Y"
+      true
+    else
+      false
+    end
+  end
+
+  private
+
+  # ユーザーに回答を求める
+  def users_input_answer
     puts "カードを引きますか？引く場合はYを、引かない場合はNを入力してください"
     input = gets.upcase.chomp
     unless input == "Y" || input == "N"
@@ -110,16 +132,7 @@ class Player < PlayerBase
         break if input == "Y" || input == "N"
       end
     end
-
-    if input == "Y"
-      true
-    else
-      false
-    end
   end
-
-  private
-
 end
 
 
