@@ -65,8 +65,6 @@ class PlayerBase
     end
     calculation_cards
   end
-
-
 end
 
 class Player < PlayerBase
@@ -92,7 +90,6 @@ class Player < PlayerBase
     input
   end
 end
-
 
 class Dealer < PlayerBase
   def dealer_draw?(point)
