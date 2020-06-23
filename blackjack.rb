@@ -15,7 +15,7 @@ class BlackJack
 
   def player_draw
     loop do
-      @player_hand << @player.draw(deck)# if @player.draw?
+      @player_hand << @player.draw(deck)
       point = @player.point_for_display(@player_hand)
       puts "あなたの手札: | #{@player.show_hand(player_hand)} |"
       puts "ポイント: #{point}"
