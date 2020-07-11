@@ -1,5 +1,5 @@
-require './card'
-require './player'
+require './lib/card'
+require './lib/player'
 
 class BlackJack
   attr_accessor :player_hand, :dealer_hand
