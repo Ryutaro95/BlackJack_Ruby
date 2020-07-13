@@ -6,7 +6,7 @@ class PlayerBase
   end
 
   # 手札の数字を表示用の役に変換（非破壊的）
-  def to_role(hand)#card_for_display(hand)
+  def to_role(hand)
     show_cards = []
     hand.each do |card|
       case card[1]
